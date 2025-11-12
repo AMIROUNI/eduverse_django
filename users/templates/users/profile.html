@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>School Profile</title>
+    >
+    {% load static %}
+    <link rel="stylesheet" type="text/css" href="{% static 'css/profile.css' %}">
+    <link rel="stylesheet" href="{% static 'css/header.css' %}">
+    <link rel="stylesheet" href="{% static 'css/footer.css' %}">
+       
+</head>
+<body>
+
+
+    {% include 'includes/header.html' %}    
+    <div class="paper-background" style="margin-top: 5em;"></div >
+    
+    <div class="school-profile-card"  style="margin-top: 5em; margin-bottom: 5em;">
+        <div class="school-header">
+            <div class="school-name">PRESTIGE ACADEMY</div>
+            <div class="school-motto">"Knowledge, Integrity, Excellence"</div>
+        </div>
+        
+        <div class="profile-content">
+            <div class="profile-sidebar">
+                <div class="avatar-container">
+                    {% if user.avatar %}
+                        <img src="{{ user.avatar.url }}" alt="Student Avatar" class="avatar-image">
+                    {% else %}
+                        <div class="avatar-placeholder">📷</div>
+                    {% endif %}
+                </div>
+                <div class="student-id">ID: {{ user.id|stringformat:"06d" }}</div>
+            </div>
+            
+            <div class="profile-details">
+                {% if user.role == "instructor" %}
+                    <h2 class="profile-title">INSTRUCTOR PROFILE</h2>
+                {% else %}
+                <h2 class="profile-title">STUDENT PROFILE</h2>
+                {% endif %}
+                
+                <div class="info-grid">
+                    <div class="info-item">
+                        <span class="info-label">Full Name</span>
+                        <div class="info-value">{{ user.username }}</div>
+                    </div>
+                    
+                    <div class="info-item">
+                        <span class="info-label">Email Address</span>
+                        <div class="info-value">{{ user.email }}</div>
+                    </div>
+                    
+                    <div class="info-item">
+                        <span class="info-label">Role</span>
+                        <div class="info-value">
+                            {{ user.role }}
+                            <span class="role-badge">ACTIVE</span>
+                        </div>
+                    </div>
+                    
+                    <div class="info-item">
+                        <span class="info-label">Enrollment Date</span>
+                        <div class="info-value">September 1, 2023</div>
+                    </div>
+                    
+                    <div class="info-item">
+                        <span class="info-label">Department</span>
+                        <div class="info-value">Computer Science</div>
+                    </div>
+                    
+                    <div class="info-item">
+                        <span class="info-label">Academic Year</span>
+                        <div class="info-value">2023-2024</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="update-section">
+            <h3 class="section-title">UPDATE STUDENT PHOTO</h3>
+            
+            <form method="post" enctype="multipart/form-data" class="avatar-form">
+                {% csrf_token %}
+                
+                <div class="form-group">
+                    <label for="avatar-upload" class="file-label">
+                        <span class="file-icon">📁</span>
+                        <span>Choose student photo file</span>
+                    </label>
+                    <input type="file" id="avatar-upload" name="avatar" class="file-input" accept="image/*">
+                </div>
+                
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary">Upload Photo</button>
+                    <button type="reset" class="btn btn-secondary">Cancel</button>
+                </div>
+            </form>
+        </div>
+        
+        <div class="official-stamp">
+            OFFICIAL<br>SCHOOL<br>RECORD
+        </div>
+    </div>
+
+
+
+    {% include 'includes/footer.html' %}
+
+    <script>
+        // File input display
+        document.getElementById('avatar-upload').addEventListener('change', function(e) {
+            const label = document.querySelector('.file-label');
+            if (this.files.length > 0) {
+                label.innerHTML = `<span class="file-icon">✅</span> <span>Selected: ${this.files[0].name}</span>`;
+                label.style.borderColor = '#b8465b';
+                label.style.backgroundColor = '#f9eaea';
+            } else {
+                label.innerHTML = `<span class="file-icon">📁</span> <span>Choose student photo file</span>`;
+                label.style.borderColor = '';
+                label.style.backgroundColor = '';
+            }
+        });
+    </script>
+
+
+</body>
+</html>

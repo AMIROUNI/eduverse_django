@@ -29,10 +29,12 @@
                     <span class="title-line">Limits</span>
                 </h1>
                 <p class="hero-subtitle">Discover your potential with our interactive online courses and quizzes. Learn at your own pace, anywhere, anytime.</p>
+                {% if not user.is_authenticated %}
                 <div class="hero-buttons">
                     <a href="{% url 'signup' %}" class="btn btn-primary">Start Learning Free</a>
                     <a href="#features" class="btn btn-secondary">Explore Courses</a>
                 </div>
+                {% endif %}
             </div>
             <div class="hero-visual">
                 <div class="floating-elements">

@@ -7,6 +7,7 @@ class User(AbstractUser):
         ('instructor', 'Instructor'),
         ('admin', 'Admin'),
     )
+    avatar = models.ImageField(upload_to='avatars/', null=True, blank=True)
     role = models.CharField(max_length=20, choices=ROLE_CHOICES, default='student')
     bio = models.TextField(blank=True)
     avatar = models.ImageField(upload_to='avatars/', null=True, blank=True)
