@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EduVerse - Online Learning Platform</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/landing.css' %}">
+    <link rel="stylesheet" href="{% static 'css/header.css' %}">
+    <link rel="stylesheet" href="{% static 'css/footer.css' %}">
+</head>
+<body>
+    <!-- Animated Background -->
+    <div class="sky-background">
+        <div class="cloud cloud-1"></div>
+        <div class="cloud cloud-2"></div>
+        <div class="cloud cloud-3"></div>
+        <div class="sun"></div>
+    </div>
+
+    {% include 'includes/header.html' %}
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-content">
+            <div class="hero-text">
+                <h1 class="hero-title">
+                    <span class="title-line">Learn Without</span>
+                    <span class="title-line">Limits</span>
+                </h1>
+                <p class="hero-subtitle">Discover your potential with our interactive online courses and quizzes. Learn at your own pace, anywhere, anytime.</p>
+                <div class="hero-buttons">
+                    <a href="{% url 'signup' %}" class="btn btn-primary">Start Learning Free</a>
+                    <a href="#features" class="btn btn-secondary">Explore Courses</a>
+                </div>
+            </div>
+            <div class="hero-visual">
+                <div class="floating-elements">
+                    <div class="floating-card card-1">
+                        <div class="card-icon">📚</div>
+                        <h4>Courses</h4>
+                    </div>
+                    <div class="floating-card card-2">
+                        <div class="card-icon">🧠</div>
+                        <h4>Quizzes</h4>
+                    </div>
+                    <div class="floating-card card-3">
+                        <div class="card-icon">🎯</div>
+                        <h4>Progress</h4>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section id="features" class="features" style="width: 100%;">
+        <div class="container">
+            <div class="section-header">
+                <h2>Why Choose EduVerse?</h2>
+                <p>Experience learning like never before with our innovative platform</p>
+            </div>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">🎓</div>
+                    <h3>Expert Courses</h3>
+                    <p>Access high-quality courses created by industry experts and experienced educators.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">⚡</div>
+                    <h3>Interactive Learning</h3>
+                    <p>Engage with interactive quizzes and assessments to reinforce your knowledge.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">📱</div>
+                    <h3>Learn Anywhere</h3>
+                    <p>Study on any device, at your own pace, with our mobile-friendly platform.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">📊</div>
+                    <h3>Track Progress</h3>
+                    <p>Monitor your learning journey with detailed progress tracking and analytics.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">👥</div>
+                    <h3>Community Support</h3>
+                    <p>Connect with fellow learners and get support from our community.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🎯</div>
+                    <h3>Personalized Path</h3>
+                    <p>Get customized learning recommendations based on your goals and progress.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- How It Works Section -->
+    <section class="how-it-works">
+        <div class="container">
+            <div class="section-header">
+                <h2>How It Works</h2>
+                <p>Start your learning journey in just a few simple steps</p>
+            </div>
+            <div class="steps">
+                <div class="step">
+                    <div class="step-number">1</div>
+                    <div class="step-content">
+                        <h3>Create Account</h3>
+                        <p>Sign up for free and set up your learning profile</p>
+                    </div>
+                </div>
+                <div class="step">
+                    <div class="step-number">2</div>
+                    <div class="step-content">
+                        <h3>Choose Courses</h3>
+                        <p>Browse our catalog and select courses that interest you</p>
+                    </div>
+                </div>
+                <div class="step">
+                    <div class="step-number">3</div>
+                    <div class="step-content">
+                        <h3>Start Learning</h3>
+                        <p>Access course materials and begin your learning journey</p>
+                    </div>
+                </div>
+                <div class="step">
+                    <div class="step-number">4</div>
+                    <div class="step-content">
+                        <h3>Take Quizzes</h3>
+                        <p>Test your knowledge with interactive quizzes and assessments</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="cta">
+        <div class="container">
+            <div class="cta-content">
+                <h2>Ready to Start Your Learning Journey?</h2>
+                <p>Join thousands of students already learning on EduVerse</p>
+                <div class="cta-buttons">
+                    <a href="{% url 'signup' %}" class="btn btn-primary btn-large">Get Started Today</a>
+                    <a href="{% url 'login' %}" class="btn btn-secondary btn-large">I Have an Account</a>
+                </div>
+                <div class="stats">
+                    <div class="stat">
+                        <div class="stat-number">10K+</div>
+                        <div class="stat-label">Students</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-number">500+</div>
+                        <div class="stat-label">Courses</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-number">95%</div>
+                        <div class="stat-label">Success Rate</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    {% include 'includes/footer.html' %}
+
+    <script>
+        // Simple animations
+        document.addEventListener('DOMContentLoaded', function() {
+            // Animate elements on scroll
+            const observerOptions = {
+                threshold: 0.1,
+                rootMargin: '0px 0px -50px 0px'
+            };
+
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.style.opacity = '1';
+                        entry.target.style.transform = 'translateY(0)';
+                    }
+                });
+            }, observerOptions);
+
+            // Observe all feature cards and steps
+            document.querySelectorAll('.feature-card, .step').forEach(el => {
+                el.style.opacity = '0';
+                el.style.transform = 'translateY(30px)';
+                el.style.transition = 'all 0.6s ease-out';
+                observer.observe(el);
+            });
+
+            // Cloud animations
+            const clouds = document.querySelectorAll('.cloud');
+            clouds.forEach((cloud, index) => {
+                cloud.style.animationDelay = `${index * 2}s`;
+            });
+        });
+    </script>
+</body>
+</html>

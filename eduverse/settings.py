@@ -31,6 +31,7 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    'jazzmin',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -42,6 +43,8 @@ INSTALLED_APPS = [
     'enrollments',
     'quizzes',
     'payments',
+    'eduverse',
+    'base'
 ]
 
 AUTH_USER_MODEL = 'users.User'
@@ -57,13 +60,16 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = 'eduverse.urls'
+STATIC_URL = '/static/'
+STATICFILES_DIRS = [BASE_DIR / "static"]
 
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [BASE_DIR / 'templates'],
+    
         'APP_DIRS': True,
-        'OPTIONS': {
+        'OPTIONS': {    
             'context_processors': [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',

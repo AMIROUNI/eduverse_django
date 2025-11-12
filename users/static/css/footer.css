@@ -1,0 +1,712 @@
+/* CSS Variables for the color palette */
+:root {
+  --color-50: #fcf4f4;
+  --color-100: #f9eaea;
+  --color-200: #f4d7da;
+  --color-300: #e9b1b6;
+  --color-400: #de8e96;
+  --color-500: #ce6573;
+  --color-600: #b8465b;
+  --color-700: #9a364b;
+  --color-800: #822f43;
+  --color-900: #702b3e;
+  --color-950: #3d141e;
+}
+
+/* Base reset and typography */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+}
+
+/* Fix body layout for header + form + footer */
+body {
+  background: linear-gradient(135deg, var(--color-50), var(--color-100));
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  color: var(--color-900);
+  line-height: 1.6;
+}
+
+/* Main content area - centers the form */
+main {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+  width: 100%;
+}
+
+/* Main container styling */
+.container {
+  max-width: 500px;
+  width: 100%;
+  background: white;
+  border-radius: 20px;
+  box-shadow: 
+    0 15px 35px rgba(0, 0, 0, 0.1),
+    0 5px 15px rgba(0, 0, 0, 0.05);
+  overflow: hidden;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.container:hover {
+  transform: translateY(-5px);
+  box-shadow: 
+    0 20px 40px rgba(0, 0, 0, 0.15),
+    0 8px 20px rgba(0, 0, 0, 0.08);
+}
+
+/* Header section */
+.header {
+  background: linear-gradient(135deg, var(--color-500), var(--color-700));
+  color: white;
+  padding: 35px 30px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.header::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+  animation: float 6s ease-in-out infinite;
+}
+
+.header h2 {
+  font-size: 32px;
+  font-weight: 700;
+  margin-bottom: 8px;
+  letter-spacing: -0.5px;
+  position: relative;
+  z-index: 1;
+}
+
+.header p {
+  opacity: 0.9;
+  font-size: 16px;
+  position: relative;
+  z-index: 1;
+}
+
+/* Form container styling */
+.form-container {
+  padding: 35px 30px;
+  background: white;
+}
+
+/* Django form styling */
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* Form paragraph groups (from form.as_p) */
+form p {
+  margin-bottom: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  animation: slideInUp 0.6s ease forwards;
+  opacity: 0;
+  transform: translateY(20px);
+}
+
+form p:nth-child(1) { animation-delay: 0.1s; }
+form p:nth-child(2) { animation-delay: 0.2s; }
+form p:nth-child(3) { animation-delay: 0.3s; }
+form p:nth-child(4) { animation-delay: 0.4s; }
+form p:nth-child(5) { animation-delay: 0.5s; }
+
+/* Labels */
+form label {
+  font-weight: 600;
+  color: var(--color-800);
+  font-size: 15px;
+  transition: color 0.3s ease;
+  margin-bottom: 5px;
+}
+
+form label:hover {
+  color: var(--color-600);
+}
+
+/* Input fields */
+form input[type="text"],
+form input[type="email"],
+form input[type="password"],
+form select {
+  width: 100%;
+  padding: 14px 16px;
+  border: 2px solid var(--color-200);
+  border-radius: 12px;
+  font-size: 16px;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  background-color: var(--color-50);
+  color: var(--color-900);
+  outline: none;
+}
+
+form input::placeholder {
+  color: var(--color-400);
+  opacity: 0.7;
+}
+
+form input:focus,
+form select:focus {
+  border-color: var(--color-500);
+  background-color: white;
+  box-shadow: 
+    0 0 0 4px rgba(206, 101, 115, 0.15),
+    0 4px 12px rgba(206, 101, 115, 0.1);
+  transform: translateY(-2px);
+}
+
+form input:hover:not(:focus),
+form select:hover:not(:focus) {
+  border-color: var(--color-300);
+  background-color: var(--color-100);
+}
+
+/* Error messages and help text */
+form .helptext {
+  font-size: 12px;
+  color: var(--color-600);
+  margin-top: 5px;
+  font-style: italic;
+}
+
+form .errorlist {
+  list-style: none;
+  padding: 0;
+  margin: 5px 0 0 0;
+}
+
+form .errorlist li {
+  color: var(--color-600);
+  font-size: 12px;
+  font-weight: 500;
+  padding: 5px 0;
+  border-left: 3px solid var(--color-600);
+  padding-left: 10px;
+  background-color: rgba(184, 70, 91, 0.05);
+  border-radius: 0 4px 4px 0;
+}
+
+/* Role select dropdown styling */
+form select {
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23ce6573' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 16px center;
+  background-size: 16px;
+  padding-right: 45px;
+  cursor: pointer;
+}
+
+form select option {
+  padding: 12px;
+  background: white;
+  color: var(--color-900);
+}
+
+/* Password field wrapper for toggle functionality */
+.password-field {
+  position: relative;
+}
+
+.toggle-password {
+  position: absolute;
+  right: 15px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  color: var(--color-500);
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 600;
+  padding: 5px 10px;
+  border-radius: 6px;
+  transition: all 0.3s ease;
+}
+
+.toggle-password:hover {
+  background-color: var(--color-100);
+  color: var(--color-600);
+}
+
+/* Primary button styling */
+form button[type="submit"] {
+  width: 100%;
+  padding: 16px;
+  background: linear-gradient(135deg, var(--color-500), var(--color-600));
+  color: white;
+  border: none;
+  border-radius: 12px;
+  font-size: 17px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 
+    0 6px 20px rgba(206, 101, 115, 0.3),
+    0 2px 8px rgba(206, 101, 115, 0.2);
+  position: relative;
+  overflow: hidden;
+  margin-top: 10px;
+  animation: slideInUp 0.6s ease 0.6s forwards;
+  opacity: 0;
+  transform: translateY(20px);
+}
+
+form button[type="submit"]::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+  transition: left 0.6s ease;
+}
+
+form button[type="submit"]:hover {
+  background: linear-gradient(135deg, var(--color-600), var(--color-700));
+  box-shadow: 
+    0 10px 25px rgba(206, 101, 115, 0.4),
+    0 4px 12px rgba(206, 101, 115, 0.3);
+  transform: translateY(-3px);
+}
+
+form button[type="submit"]:hover::before {
+  left: 100%;
+}
+
+form button[type="submit"]:active {
+  transform: translateY(-1px);
+  box-shadow: 
+    0 4px 15px rgba(206, 101, 115, 0.4),
+    0 2px 6px rgba(206, 101, 115, 0.3);
+}
+
+/* Login link section */
+.login-link {
+  text-align: center;
+  padding-top: 25px;
+  border-top: 2px solid var(--color-100);
+  font-size: 15px;
+  color: var(--color-700);
+  margin-top: 20px;
+}
+
+.login-link a {
+  color: var(--color-500);
+  text-decoration: none;
+  font-weight: 700;
+  transition: all 0.3s ease;
+  position: relative;
+  padding: 2px 4px;
+  border-radius: 4px;
+}
+
+.login-link a::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background: var(--color-500);
+  transition: width 0.3s ease;
+}
+
+.login-link a:hover {
+  color: var(--color-600);
+  background: var(--color-50);
+}
+
+.login-link a:hover::after {
+  width: 100%;
+}
+
+/* Messages styling */
+.messages {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 20px 0;
+}
+
+.messages .success {
+  background: linear-gradient(135deg, #10b981, #059669);
+  color: white;
+  padding: 15px 20px;
+  border-radius: 12px;
+  font-weight: 500;
+  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+  animation: slideInDown 0.5s ease;
+}
+
+/* Footer Styles - Fixed for full width */
+.main-footer {
+  background: linear-gradient(135deg, var(--color-800), var(--color-900));
+  color: var(--color-100);
+  padding: 3rem 0 1rem;
+  width: 100%;
+  position: relative;
+  overflow: hidden;
+  margin-top: auto; /* Push footer to bottom */
+}
+
+.main-footer::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--color-500), transparent);
+}
+
+.footer-content {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 2rem;
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr;
+  gap: 3rem;
+  position: relative;
+  z-index: 1;
+}
+
+.footer-section h3 {
+  font-size: 1.8rem;
+  font-weight: 700;
+  background: linear-gradient(135deg, var(--color-200), var(--color-100));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: 1rem;
+  letter-spacing: -0.5px;
+}
+
+.footer-section h4 {
+  color: var(--color-100);
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin-bottom: 1.5rem;
+  position: relative;
+}
+
+.footer-section h4::after {
+  content: '';
+  position: absolute;
+  bottom: -0.5rem;
+  left: 0;
+  width: 30px;
+  height: 2px;
+  background: linear-gradient(135deg, var(--color-500), var(--color-400));
+  border-radius: 2px;
+}
+
+.footer-section p {
+  line-height: 1.6;
+  opacity: 0.9;
+  max-width: 300px;
+}
+
+.footer-section ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.footer-section ul li {
+  margin-bottom: 0.8rem;
+}
+
+.footer-section ul li a {
+  color: var(--color-200);
+  text-decoration: none;
+  transition: all 0.3s ease;
+  padding: 0.3rem 0;
+  display: block;
+  position: relative;
+  font-weight: 500;
+}
+
+.footer-section ul li a::before {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 0;
+  height: 1px;
+  background: linear-gradient(135deg, var(--color-500), var(--color-400));
+  transition: width 0.3s ease;
+}
+
+.footer-section ul li a:hover {
+  color: var(--color-50);
+  transform: translateX(5px);
+}
+
+.footer-section ul li a:hover::before {
+  width: 100%;
+}
+
+/* Footer bottom section */
+.footer-section:last-child {
+  grid-column: 1 / -1;
+  text-align: center;
+  padding-top: 2rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  margin-top: 1rem;
+}
+
+.footer-section:last-child p {
+  margin: 0 auto;
+  opacity: 0.8;
+  font-size: 0.9rem;
+}
+
+/* Social Media Icons */
+.footer-social {
+  display: flex;
+  gap: 1rem;
+  margin-top: 1.5rem;
+}
+
+.footer-social a {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 50%;
+  color: var(--color-100);
+  text-decoration: none;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(10px);
+}
+
+.footer-social a:hover {
+  background: var(--color-500);
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(206, 101, 115, 0.3);
+}
+
+/* Contact Info */
+.footer-contact {
+  margin-top: 1.5rem;
+}
+
+.footer-contact p {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+  font-size: 0.9rem;
+}
+
+/* Animations */
+@keyframes slideInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideInDown {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translate(0, 0) rotate(0deg);
+  }
+  33% {
+    transform: translate(30px, -30px) rotate(120deg);
+  }
+  66% {
+    transform: translate(-20px, 20px) rotate(240deg);
+  }
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.footer-section {
+  animation: fadeInUp 0.6s ease-out;
+}
+
+.footer-section:nth-child(1) { animation-delay: 0.1s; }
+.footer-section:nth-child(2) { animation-delay: 0.2s; }
+.footer-section:nth-child(3) { animation-delay: 0.3s; }
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .footer-content {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+    padding: 0 1.5rem;
+  }
+  
+  .footer-section {
+    text-align: center;
+  }
+  
+  .footer-section h4::after {
+    left: 50%;
+    transform: translateX(-50%);
+  }
+  
+  .footer-section ul li a:hover {
+    transform: translateY(-2px);
+  }
+  
+  .footer-social {
+    justify-content: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .container {
+    border-radius: 16px;
+    margin: 10px;
+  }
+  
+  .header {
+    padding: 25px 20px;
+  }
+  
+  .header h2 {
+    font-size: 28px;
+  }
+  
+  .form-container {
+    padding: 25px 20px;
+  }
+  
+  form input[type="text"],
+  form input[type="email"],
+  form input[type="password"],
+  form select {
+    padding: 12px 14px;
+  }
+  
+  form button[type="submit"] {
+    padding: 14px;
+  }
+  
+  .main-footer {
+    padding: 2rem 0 1rem;
+  }
+  
+  .footer-content {
+    padding: 0 1rem;
+    gap: 1.5rem;
+  }
+  
+  .footer-section h3 {
+    font-size: 1.5rem;
+  }
+  
+  .footer-section p {
+    font-size: 0.9rem;
+  }
+}
+
+/* Focus states for accessibility */
+form input:focus-visible,
+form select:focus-visible,
+form button:focus-visible,
+.footer-section a:focus {
+  outline: 2px solid var(--color-500);
+  outline-offset: 2px;
+}
+
+/* Loading state for button */
+form button[type="submit"].loading {
+  pointer-events: none;
+  opacity: 0.8;
+}
+
+form button[type="submit"].loading::after {
+  content: '';
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  top: 50%;
+  left: 50%;
+  margin-left: -10px;
+  margin-top: -10px;
+  border: 2px solid transparent;
+  border-top: 2px solid white;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Custom scrollbar for webkit browsers */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--color-100);
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--color-400);
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-500);
+}
+
+/* Selection styles */
+::selection {
+  background-color: var(--color-500);
+  color: white;
+}
+
+::-moz-selection {
+  background-color: var(--color-500);
+  color: white;
+}

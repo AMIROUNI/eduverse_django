@@ -2,14 +2,66 @@
 <html>
 <head>
   <title>Register</title>
+  {% load static %}
+  <link rel="stylesheet" type="text/css" href="{% static 'css/register.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/header.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/footer.css' %}">
 </head>
 <body>
-  <h2>Register</h2>
-  <form method="post">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit">Register</button>
-  </form>
-  <p>Already have an account? <a >Login</a></p>
+
+  {% include 'includes/header.html' %}
+  <div class="container" style=" margin-top: 5em; margin-bottom: 5em;">
+    <div class="header">
+      <h2>Create Account</h2>
+    </div>
+    
+    <div class="form-container">
+      {% if messages %}
+        <ul class="messages">
+          {% for message in messages %}
+            <li class="{{ message.tags }}">{{ message }}</li>
+          {% endfor %}
+        </ul>
+      {% endif %}
+      
+      <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Register</button>
+      </form>
+      
+      <div class="login-link">
+        <p>Already have an account? <a href="{% url 'login' %}">Login</a></p>
+      </div>
+    </div>
+  </div>
+
+    {% include 'includes/footer.html' %}
+
+  <script>
+    // Add password toggle functionality
+    document.addEventListener('DOMContentLoaded', function() {
+      const passwordFields = document.querySelectorAll('input[type="password"]');
+      
+      passwordFields.forEach(field => {
+        const toggle = document.createElement('button');
+        toggle.type = 'button';
+        toggle.className = 'toggle-password';
+        toggle.textContent = 'Show';
+        
+        const wrapper = document.createElement('div');
+        wrapper.className = 'password-field';
+        field.parentNode.insertBefore(wrapper, field);
+        wrapper.appendChild(field);
+        wrapper.appendChild(toggle);
+        
+        toggle.addEventListener('click', function() {
+          const type = field.getAttribute('type') === 'password' ? 'text' : 'password';
+          field.setAttribute('type', type);
+          toggle.textContent = type === 'password' ? 'Show' : 'Hide';
+        });
+      });
+    });
+  </script>
 </body>
 </html>
