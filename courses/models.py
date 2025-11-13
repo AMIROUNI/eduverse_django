@@ -17,6 +17,7 @@ class Course(models.Model):
 class Section(models.Model):
     course = models.ForeignKey(Course, related_name='sections', on_delete=models.CASCADE)
     title = models.CharField(max_length=200)
+    content = models.TextField(blank=True)
     order = models.PositiveIntegerField(default=0)
 
 class Lesson(models.Model):

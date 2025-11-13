@@ -4,5 +4,6 @@ from . import views
 
 urlpatterns = [
     path('manage/', views.create_course_with_category, name='manage_course'),
-    path('success/', views.course_success, name='course_success'),
+    path('<int:course_id>/', views.course_detail, name='course_detail'),
+    path('section/<int:section_id>/', views.section_detail, name='section_detail')
 ]

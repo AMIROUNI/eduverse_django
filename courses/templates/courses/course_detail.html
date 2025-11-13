@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ course.title }} - Course Details</title>
+    
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/header.css' %}">
+    <link rel="stylesheet" href="{% static 'css/footer.css' %}">
+    
+    <link rel="stylesheet" href="{% static 'css/detail_course.css' %}">
+</head>
+<body>
+    {% include 'includes/header.html' %}
+
+    <div class="page-container">
+        {% if messages %}
+        <div class="messages-container">
+            {% for message in messages %}
+            <div class="message {{ message.tags }}">{{ message }}</div>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        <!-- Course Hero Section -->
+        <section class="course-hero">
+            <div class="hero-container">
+                <div class="course-info">
+                    <h1>{{ course.title }}</h1>
+                    <p class="course-description">{{ course.description }}</p>
+                    
+                    <div class="course-meta">
+                        <div class="meta-item">
+                            <span class="meta-icon">📚</span>
+                            <span>Category: {{ course.category.name }}</span>
+                        </div>
+                        <div class="meta-item">
+                            <span class="meta-icon">⭐</span>
+                            <span>4.8 (1,234 reviews)</span>
+                        </div>
+                        <div class="meta-item">
+                            <span class="meta-icon">👥</span>
+                            <span>15,678 students</span>
+                        </div>
+                    </div>
+                    
+                    <div class="course-actions">
+                        <button class="btn btn-secondary">
+                            <span>Add to Wishlist</span>
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="course-sidebar">
+                    <div class="course-thumbnail">
+                        {% if course.thumbnail %}
+                            <img src="{{ course.thumbnail.url }}" alt="{{ course.title }}" style="width: 100%; height: 100%; object-fit: cover;">
+                        {% else %}
+                            <span>📖</span>
+                        {% endif %}
+                    </div>
+                    <div class="sidebar-content">
+                        <div class="price">${{ course.price }}</div>
+                        <ul class="sidebar-features">
+                            <li>
+                                <span class="feature-icon">⏱️</span>
+                                <span>12 hours on-demand video</span>
+                            </li>
+                            <li>
+                                <span class="feature-icon">📄</span>
+                                <span >25 downloadable resources</span>
+                            </li>
+                            <li>
+                                <span class="feature-icon">📱</span>
+                                <span>Access on mobile and TV</span>
+                            </li>
+                            <li>
+                                <span class="feature-icon">🏆</span>
+                                <span>Certificate of completion</span>
+                            </li>
+                        </ul>
+                        <button class="btn btn-primary" style="width: 100%; justify-content: center;">
+                            <span>Add to Cart</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <div class="content-left">
+                <!-- Add Section Form -->
+                <div class="add-section-form">
+                    <h2 class="form-title">Add New Section</h2>
+                    <form method="post">
+                        {% csrf_token %}
+                        <div class="form-group">
+                            <label class="form-label" for="id_title">Section Title</label>
+                            {{ section_form.title }}
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="id_order">Order</label>
+                            {{ section_form.order }}
+                        </div>
+                        <button type="submit" class="btn btn-primary">
+                            <span>Add Section</span>
+                        </button>
+                    </form>
+                </div>
+
+                <!-- Curriculum Section -->
+                <div class="curriculum-section">
+                    <div class="section-header">
+                        <h2>Course Curriculum</h2>
+                        <span>{{ sections|length }} sections</span>
+                    </div>
+                    
+                    <div class="section-content">
+                        {% if sections %}
+                        <ul class="sections-list">
+                            {% for section in sections %}
+                            <a href="{% url 'section_detail'  section.id %}">
+                            <li class="section-item">
+                                <div class="section-item-header">
+                                    <div class="section-title">
+                                        <span>📂</span>
+                                        <span>{{ section.title }}</span>
+                                    </div>
+                                    <div class="section-actions">
+                                        <span class="section-order">Order: {{ section.order }}</span>
+                                        <button class="action-btn">✏️</button>
+                                        <button class="action-btn">🗑️</button>
+                                    </div>
+                                </div>
+                                <div class="section-content">
+                                    <p>This section currently has no lessons. Add lessons to get started.</p>
+                                    <!-- Lessons would be listed here -->
+                                </div>
+                            </li>
+
+                            </a>
+                            {% endfor %}
+                        </ul>
+                        {% else %}
+                        <div class="empty-state">
+                            <p>No sections available yet.</p>
+                            <p>Create your first section to start building your course curriculum.</p>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            
+            <div class="content-right">
+                <!-- Instructor Section -->
+                <div class="instructor-section">
+                    <div class="instructor-header">
+                        <div class="instructor-avatar">
+                            👨‍🏫
+                        </div>
+                        <div class="instructor-info">
+                            <h3>{{ course.instructor.username }}</h3>
+                            <p>Course Instructor</p>
+                        </div>
+                    </div>
+                    <p>Experienced instructor with passion for teaching and sharing knowledge. Dedicated to helping students achieve their learning goals.</p>
+                    
+                    <div class="instructor-stats">
+                        <div class="stat-item">
+                            <div class="stat-number">4.8</div>
+                            <div class="stat-label">Instructor Rating</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-number">12</div>
+                            <div class="stat-label">Courses</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-number">45,678</div>
+                            <div class="stat-label">Students</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-number">3,456</div>
+                            <div class="stat-label">Reviews</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {% include 'includes/footer.html' %}
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize form fields with proper classes
+            const formInputs = document.querySelectorAll('input, select, textarea');
+            formInputs.forEach(input => {
+                input.classList.add('form-control');
+            });
+            
+            // Section accordion functionality
+            const sectionHeaders = document.querySelectorAll('.section-item-header');
+            sectionHeaders.forEach(header => {
+                header.addEventListener('click', function() {
+                    const content = this.nextElementSibling;
+                    content.style.display = content.style.display === 'none' ? 'block' : 'none';
+                });
+            });
+        });
+    </script>
+</body>
+</html>

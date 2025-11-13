@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ section.title }} - Lessons</title>
+
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/header.css' %}">
+    <link rel="stylesheet" href="{% static 'css/footer.css' %}">
+    <link rel="stylesheet" href="{% static 'css/lesson_list.css' %}">
+</head>
+<body>
+    {% include 'includes/header.html' %}
+
+    <div class="page-container">
+        <!-- Book Container -->
+        <div class="book-container">
+            <div class="book-spine"></div>
+            
+            <div class="book-header">
+                <h1 class="book-title">Course Lessons</h1>
+                <p class="section-title">Section: {{ section.title }}</p>
+            </div>
+            
+            <div class="book-content">
+                <!-- Left Page - Lessons List -->
+                <div class="page-left">
+                    <div class="page-corner"></div>
+                    
+                    <div class="lessons-header">
+                        <h2 class="lessons-title">Table of Contents</h2>
+                        <span class="lessons-count">{{ lessons|length }} lessons</span>
+                    </div>
+                    
+                    {% if lessons %}
+                    <ul class="lessons-list">
+                        {% for lesson in lessons %}
+                        <li class="lesson-item {% if forloop.first %}active{% endif %}" 
+                            data-lesson-id="{{ lesson.id }}"
+                            data-title="{{ lesson.title }}"
+                            data-content="{{ lesson.content }}"
+                            data-duration="{{ lesson.duration }}"
+                            data-video="{{ lesson.video_url }}"
+                            data-pdf="{{ lesson.pdf_file.url }}">
+                            <div class="lesson-number">{{ forloop.counter }}</div>
+                            <h3 class="lesson-title">{{ lesson.title }}</h3>
+                            <p class="lesson-preview">
+                                {{ lesson.content|truncatewords:20|default:"No content available" }}
+                            </p>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                    {% else %}
+                    <div class="empty-lessons">
+                        <p>No lessons available for this section yet.</p>
+                        <p>Create your first lesson to get started!</p>
+                    </div>
+                    {% endif %}
+                </div>
+                
+                <!-- Right Page - Lesson Reader -->
+                <div class="page-right">
+                    <div class="page-corner"></div>
+                    
+                    <div class="reader-header">
+                        <h2 class="current-lesson-title" id="current-lesson-title">
+                            {% if lessons %} {{ lessons.0.title }} {% else %} No Lesson Selected {% endif %}
+                        </h2>
+                        <span class="lesson-duration" id="lesson-duration">
+                            {% if lessons %} {{ lessons.0.duration|default:"Duration not set" }} {% endif %}
+                        </span>
+                    </div>
+                    
+                    <div class="lesson-content" id="lesson-content">
+                        {% if lessons %}
+                            {{ lessons.0.content|linebreaks }}
+                            
+                            {% if lessons.0.video_url %}
+                            <div class="video-container" style="margin: 2rem 0;">
+                                <h4>Video Content</h4>
+                                <a href="{{ lessons.0.video_url }}" target="_blank" class="btn-primary" style="display: inline-flex; text-decoration: none;">
+                                    Watch Video
+                                </a>
+                            </div>
+                            {% endif %}
+                            
+                            {% if lessons.0.pdf_file %}
+                            <div class="pdf-container" style="margin: 2rem 0;">
+                                <h4>Download Materials</h4>
+                                <a href="{{ lessons.0.pdf_file.url }}" target="_blank" class="btn-primary" style="display: inline-flex; text-decoration: none;">
+                                    Download PDF
+                                </a>
+                            </div>
+                            {% endif %}
+                        {% else %}
+                            <div class="page-placeholder">
+                                <p>Select a lesson from the table of contents to start reading</p>
+                            </div>
+                        {% endif %}
+                    </div>
+                    
+                    {% if lessons %}
+                    <div class="reader-controls">
+                        <button class="nav-btn" id="prev-lesson" disabled>
+                            ← Previous
+                        </button>
+                        
+                        <span class="progress-indicator" id="progress-indicator">
+                            1 of {{ lessons|length }}
+                        </span>
+                        
+                        <button class="nav-btn" id="next-lesson" {% if lessons|length <= 1 %}disabled{% endif %}>
+                            Next →
+                        </button>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        
+        <!-- Add Lesson Form -->
+        <div class="add-lesson-section">
+            <div class="form-header">
+                <h2 class="form-title">Add New Lesson</h2>
+            </div>
+            
+            <form method="post" enctype="multipart/form-data" class="lesson-form">
+                {% csrf_token %}
+                
+                <div class="form-group full-width">
+                    <label class="form-label" for="id_title">Lesson Title</label>
+                    {{ lesson_form.title }}
+                </div>
+                
+                <div class="form-group full-width">
+                    <label class="form-label" for="id_content">Lesson Content</label>
+                    {{ lesson_form.content }}
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label" for="id_video_url">Video URL</label>
+                    {{ lesson_form.video_url }}
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label" for="id_order">Order</label>
+                    {{ lesson_form.order }}
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label" for="id_duration">Duration</label>
+                    {{ lesson_form.duration }}
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label" for="id_pdf_file">PDF File</label>
+                    <div class="file-input-wrapper">
+                        {{ lesson_form.pdf_file }}
+                        <div class="file-input-label">
+                            <span>Choose PDF file</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <button type="submit" class="btn-primary">
+                    <span>Add Lesson</span>
+                </button>
+            </form>
+        </div>
+    </div>
+
+    {% include 'includes/footer.html' %}
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize form fields with proper classes
+            const formInputs = document.querySelectorAll('input, select, textarea');
+            formInputs.forEach(input => {
+                input.classList.add('form-control');
+            });
+            
+            // Lesson navigation functionality
+            const lessonItems = document.querySelectorAll('.lesson-item');
+            const currentLessonTitle = document.getElementById('current-lesson-title');
+            const lessonDuration = document.getElementById('lesson-duration');
+            const lessonContent = document.getElementById('lesson-content');
+            const prevBtn = document.getElementById('prev-lesson');
+            const nextBtn = document.getElementById('next-lesson');
+            const progressIndicator = document.getElementById('progress-indicator');
+            
+            let currentLessonIndex = 0;
+            
+            // Function to update lesson display
+            function updateLessonDisplay(index) {
+                if (lessonItems.length === 0) return;
+                
+                const lesson = lessonItems[index];
+                const title = lesson.getAttribute('data-title');
+                const content = lesson.getAttribute('data-content');
+                const duration = lesson.getAttribute('data-duration');
+                const videoUrl = lesson.getAttribute('data-video');
+                const pdfFile = lesson.getAttribute('data-pdf');
+                
+                // Update active state
+                lessonItems.forEach(item => item.classList.remove('active'));
+                lesson.classList.add('active');
+                
+                // Update content
+                currentLessonTitle.textContent = title;
+                lessonDuration.textContent = duration || 'Duration not set';
+                
+                // Build content HTML
+                let contentHTML = `<p>${content.replace(/\n/g, '</p><p>')}</p>`;
+                
+                if (videoUrl) {
+                    contentHTML += `
+                        <div class="video-container" style="margin: 2rem 0;">
+                            <h4>Video Content</h4>
+                            <a href="${videoUrl}" target="_blank" class="btn-primary" style="display: inline-flex; text-decoration: none;">
+                                Watch Video
+                            </a>
+                        </div>
+                    `;
+                }
+                
+                if (pdfFile) {
+                    contentHTML += `
+                        <div class="pdf-container" style="margin: 2rem 0;">
+                            <h4>Download Materials</h4>
+                            <a href="${pdfFile}" target="_blank" class="btn-primary" style="display: inline-flex; text-decoration: none;">
+                                Download PDF
+                            </a>
+                        </div>
+                    `;
+                }
+                
+                lessonContent.innerHTML = contentHTML;
+                
+                // Update navigation
+                prevBtn.disabled = index === 0;
+                nextBtn.disabled = index === lessonItems.length - 1;
+                progressIndicator.textContent = `${index + 1} of ${lessonItems.length}`;
+                
+                currentLessonIndex = index;
+            }
+            
+            // Click event for lesson items
+            lessonItems.forEach((item, index) => {
+                item.addEventListener('click', () => {
+                    updateLessonDisplay(index);
+                });
+            });
+            
+            // Navigation buttons
+            if (prevBtn) {
+                prevBtn.addEventListener('click', () => {
+                    if (currentLessonIndex > 0) {
+                        updateLessonDisplay(currentLessonIndex - 1);
+                    }
+                });
+            }
+            
+            if (nextBtn) {
+                nextBtn.addEventListener('click', () => {
+                    if (currentLessonIndex < lessonItems.length - 1) {
+                        updateLessonDisplay(currentLessonIndex + 1);
+                    }
+                });
+            }
+            
+            // File input display
+            const fileInputs = document.querySelectorAll('input[type="file"]');
+            
+            fileInputs.forEach(input => {
+                input.addEventListener('change', function() {
+                    const label = this.parentElement.querySelector('.file-input-label');
+                    if (this.files.length > 0) {
+                        label.innerHTML = `<span>Selected: ${this.files[0].name}</span>`;
+                        label.style.borderColor = '#b8465b';
+                        label.style.backgroundColor = '#f9eaea';
+                    } else {
+                        label.innerHTML = '<span>Choose PDF file</span>';
+                        label.style.borderColor = '';
+                        label.style.backgroundColor = '';
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>

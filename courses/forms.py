@@ -11,11 +11,11 @@ class CourseForm(forms.ModelForm):
 class SectionForm(forms.ModelForm):
     class Meta:
         model =  Section
-        fields = ['course', 'title', 'order']
+        fields = [ 'title','content','order' ]
 class LessonForm(forms.ModelForm):
     class Meta:
         model = Lesson
-        fields = ['section', 'title', 'content', 'video_url', 'pdf_file', 'order', 'duration']
+        fields = [ 'title', 'content', 'video_url', 'pdf_file', 'order', 'duration']
 class CategoryForm(forms.ModelForm):
     class Meta:
         model = Category

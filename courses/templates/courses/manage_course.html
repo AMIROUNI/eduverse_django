@@ -98,6 +98,7 @@
                     {% for course in courses %}
                     <div class="course-card">
                         <div class="course-card-content">
+                        <a href="{% url 'course_detail' course.id %}">
                             <div>
                                 <h3 class="course-title">{{ course.title }}</h3>
                                 <div class="course-category">
@@ -114,6 +115,7 @@
                             </div>
                         </div>
                     </div>
+                   </a>
                     {% endfor %}
                 </div>
                 {% else %}
