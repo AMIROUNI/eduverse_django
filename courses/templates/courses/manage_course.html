@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Courses</title>
+    
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/manage_course.css' %}">
+    <link rel="stylesheet" href="{% static 'css/header.css' %}">
+    <link rel="stylesheet" href="{% static 'css/footer.css' %}">
+    
+
+</head>
+<body>
+    {% include 'includes/header.html' %}
+
+    <div class="page-container">
+        <h1 class="page-title">Manage Courses</h1>
+        
+        {% if messages %}
+        <div class="messages-container">
+            {% for message in messages %}
+            <div class="message {{ message.tags }}">{{ message }}</div>
+            {% endfor %}
+        </div>
+        {% endif %}
+        
+        <div class="dashboard-container">
+            <div class="form-section">
+                <div class="form-tabs">
+                    <div class="tab active" data-tab="course-tab">Create Course</div>
+                    <div class="tab" data-tab="category-tab">Create Category</div>
+                </div>
+                
+                <form method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    
+                    <div id="course-tab" class="tab-content active">
+                        <h2>Create New Course</h2>
+                        
+                        <div class="form-group">
+                            <label for="id_title">Course Title</label>
+                            {{ course_form.title }}
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="id_description">Description</label>
+                            {{ course_form.description }}
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="id_category">Category</label>
+                            {{ course_form.category }}
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="id_price">Price</label>
+                            {{ course_form.price }}
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="id_thumbnail">Thumbnail</label>
+                            <div class="file-input-wrapper">
+                                {{ course_form.thumbnail }}
+                                <div class="file-input-label">
+                                    <span>Choose a thumbnail image</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div id="category-tab" class="tab-content">
+                        <h2>Create New Category</h2>
+                        
+                        <div class="form-group">
+                            <label for="id_name">Category Name</label>
+                            {{ category_form.name }}
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="id_description">Description</label>
+                            {{ category_form.description }}
+                        </div>
+                    </div>
+                    
+                    <button type="submit" class="btn-primary">
+                        <span>Create</span>
+                    </button>
+                </form>
+            </div>
+            
+            <div class="courses-section">
+                <h2>Your Courses</h2>
+                
+                {% if courses %}
+                <div class="courses-grid">
+                    {% for course in courses %}
+                    <div class="course-card">
+                        <div class="course-card-content">
+                            <div>
+                                <h3 class="course-title">{{ course.title }}</h3>
+                                <div class="course-category">
+                                    {% if course.category %}
+                                        {{ course.category.name }}
+                                    {% else %}
+                                        Uncategorized
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <div class="course-meta">
+                                <span>${{ course.price }}</span>
+                                <span>{{ course.created_at|date:"M d, Y" }}</span>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <div class="empty-state">
+                    <p>No courses available yet.</p>
+                    <p>Create your first course to get started!</p>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    {% include 'includes/footer.html' %}
+
+    <script>
+        // Tab functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const tabs = document.querySelectorAll('.tab');
+            
+            tabs.forEach(tab => {
+                tab.addEventListener('click', function() {
+                    // Remove active class from all tabs and contents
+                    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+                    document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+                    
+                    // Add active class to clicked tab and corresponding content
+                    this.classList.add('active');
+                    const tabId = this.getAttribute('data-tab');
+                    document.getElementById(tabId).classList.add('active');
+                });
+            });
+            
+            // File input display
+            const fileInputs = document.querySelectorAll('input[type="file"]');
+            
+            fileInputs.forEach(input => {
+                input.addEventListener('change', function() {
+                    const label = this.parentElement.querySelector('.file-input-label');
+                    if (this.files.length > 0) {
+                        label.innerHTML = `<span class="file-selected">Selected: ${this.files[0].name}</span>`;
+                        label.style.borderColor = '#b8465b';
+                        label.style.backgroundColor = '#f9eaea';
+                    } else {
+                        label.innerHTML = '<span>Choose a file</span>';
+                        label.style.borderColor = '';
+                        label.style.backgroundColor = '';
+                    }
+                });
+            });
+            
+            // Initialize form fields with proper classes
+            const formInputs = document.querySelectorAll('input, select, textarea');
+            formInputs.forEach(input => {
+                input.classList.add('form-control');
+            });
+        });
+    </script>
+</body>
+</html>

@@ -24,5 +24,6 @@ class Lesson(models.Model):
     title = models.CharField(max_length=200)
     content = models.TextField(blank=True)
     video_url = models.URLField(blank=True)
+    pdf_file = models.FileField(upload_to='lessons/pdfs/', blank=True, null=True)
     order = models.PositiveIntegerField(default=0)
     duration = models.DurationField(null=True, blank=True)
