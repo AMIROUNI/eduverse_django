@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Courses - Learning Platform</title>
+
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/header.css' %}">
+    <link rel="stylesheet" href="{% static 'css/footer.css' %}">
+    
+    <link rel="stylesheet" href="{% static 'css/courses.css' %}">
+</head>
+<body>
+    {% include 'includes/header.html' %}
+
+    <div class="page-container">
+        <!-- Page Header -->
+        <div class="page-header">
+            <h1 class="page-title">Explore Our Courses</h1>
+            <p class="page-subtitle">Discover knowledge that transforms your skills and career path</p>
+        </div>
+
+        <!-- Search Section -->
+        <div class="search-section">
+            <form method="get" action="{% url 'courses' %}" class="search-form">
+                <input type="text" name="q" placeholder="Search courses by title, category, or instructor..." 
+                       value="{{ query }}" class="search-input">
+                <button type="submit" class="search-btn">
+                    <span>🔍</span>
+                    <span>Search</span>
+                </button>
+            </form>
+        </div>
+
+        <!-- Messages -->
+        {% if messages %}
+        <div class="messages-container">
+            <ul class="messages-list">
+                {% for message in messages %}
+                <li class="message-item">{{ message }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+        {% endif %}
+
+        <!-- Courses Grid -->
+        <div class="courses-grid">
+            {% if courses %}
+                {% for course in courses %}
+                <div class="book-card">
+                    <!-- Book Spine -->
+                    <div class="book-spine"></div>
+                    
+                    <!-- Book Pages -->
+                    <div class="book-pages"></div>
+                    
+                    <!-- Book Cover -->
+                    <div class="book-cover">
+                        <!-- Instructor Badge -->
+                        <div class="instructor-badge">
+                            <span>👨‍🏫</span>
+                            <span>{{ course.instructor.username }}</span>
+                        </div>
+                        
+                        <!-- Thumbnail -->
+                        <div class="book-thumbnail">
+                            {% if course.thumbnail %}
+                                <img src="{{ course.thumbnail.url }}" alt="{{ course.title }}">
+                            {% else %}
+                                <span>📚</span>
+                            {% endif %}
+                        </div>
+                        
+                        <!-- Content -->
+                        <div class="book-header">
+                            <div class="course-category">
+                                {% if course.category %}
+                                    {{ course.category.name }}
+                                {% else %}
+                                    General
+                                {% endif %}
+                            </div>
+                            <h2 class="course-title">{{ course.title }}</h2>
+                            <p class="course-description">{{ course.description|truncatewords:20 }}</p>
+                        </div>
+                        
+                        <div class="book-footer">
+                            <div class="course-price">${{ course.price }}</div>
+                            <div class="course-meta">
+                                <div class="meta-item">
+                                    <span>📖</span>
+                                    <span>{{ course.sections.count }} sections</span>
+                                </div>
+                                <div class="meta-item">
+                                    <span>⏱️</span>
+                                    <span>{{ course.created_at|date:"M Y" }}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- View Details Button -->
+                    <a href="{% url 'course_detail' course.id %}" class="view-details">
+                        View Details
+                    </a>
+                </div>
+                {% endfor %}
+            {% else %}
+                <div class="empty-state">
+                    <div class="empty-icon">📚</div>
+                    <h3 class="empty-title">No Courses Available</h3>
+                    <p class="empty-description">
+                        {% if query %}
+                            No courses found matching "{{ query }}". Try adjusting your search terms.
+                        {% else %}
+                            There are no courses available at the moment. Please check back later.
+                        {% endif %}
+                    </p>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+
+    {% include 'includes/footer.html' %}
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Add interactive hover effects
+            const bookCards = document.querySelectorAll('.book-card');
+            
+            bookCards.forEach(card => {
+                card.addEventListener('mousemove', (e) => {
+                    const rect = card.getBoundingClientRect();
+                    const x = e.clientX - rect.left;
+                    const y = e.clientY - rect.top;
+                    
+                    const centerX = rect.width / 2;
+                    const centerY = rect.height / 2;
+                    
+                    const rotateY = (x - centerX) / 25;
+                    const rotateX = (centerY - y) / 25;
+                    
+                    card.style.transform = `perspective(1000px) rotateY(${rotateY}deg) rotateX(${rotateX}deg) translateY(-10px)`;
+                });
+                
+                card.addEventListener('mouseleave', () => {
+                    card.style.transform = 'perspective(1000px) rotateY(0) rotateX(0) translateY(0)';
+                });
+            });
+            
+            // Add focus management for accessibility
+            const viewDetailsButtons = document.querySelectorAll('.view-details');
+            
+            viewDetailsButtons.forEach(button => {
+                button.addEventListener('focus', () => {
+                    button.parentElement.style.transform = 'perspective(1000px) rotateY(10deg) rotateX(5deg) translateY(-10px)';
+                });
+                
+                button.addEventListener('blur', () => {
+                    button.parentElement.style.transform = 'perspective(1000px) rotateY(0) rotateX(0) translateY(0)';
+                });
+            });
+        });
+    </script>
+</body>
+</html>

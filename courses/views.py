@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import redirect, render
 from django.contrib.auth.decorators import login_required
 from courses.models import Course
 from .forms import CourseForm, CategoryForm, SectionForm , LessonForm
@@ -59,3 +59,41 @@ def section_detail(request, section_id):
     section = get_object_or_404(Section, id=section_id)
     lessons = section.lessons.all()
     return render(request, 'courses/lesson_list.html', {'section': section, 'lessons': lessons, 'lesson_form': LessonForm()})
+
+
+@login_required
+def delete_section(request, section_id):
+    section = get_object_or_404(Section, id=section_id)
+    course_id = section.course.id
+    section.delete()
+    messages.success(request, 'Section deleted successfully!')
+    return redirect('course_detail', course_id=course_id)
+
+
+
+def edit_section(request, section_id):
+    section = get_object_or_404(Section, id=section_id)
+    if request.method == 'POST':
+        form = SectionForm(request.POST, instance=section)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Section updated successfully!')
+            return redirect('course_detail', course_id=section.course.id)
+    else:
+        form = SectionForm(instance=section)
+    return render(request, 'courses/edit_section.html', {'form': form, 'section': section})
+
+@login_required
+def courses(request):
+    all_courses = Course.objects.all()
+    return render(request, 'courses/courses.html', {'courses': all_courses})
+
+
+@login_required
+def courses(request):
+    query = request.GET.get('q', '')  # get ?q= from URL
+    if query:
+        results = Course.objects.filter(title__icontains=query)  # case-insensitive search
+    else:
+        results = Course.objects.all()
+    return render(request, 'courses/courses.html', {'query': query, 'courses': results})

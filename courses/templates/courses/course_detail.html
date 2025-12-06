@@ -121,17 +121,19 @@
                         {% if sections %}
                         <ul class="sections-list">
                             {% for section in sections %}
-                            <a href="{% url 'section_detail'  section.id %}">
+                          
                             <li class="section-item">
                                 <div class="section-item-header">
                                     <div class="section-title">
+                                          <a href="{% url 'section_detail'  section.id %}">
                                         <span>📂</span>
+                                          </a>
                                         <span>{{ section.title }}</span>
                                     </div>
                                     <div class="section-actions">
                                         <span class="section-order">Order: {{ section.order }}</span>
-                                        <button class="action-btn">✏️</button>
-                                        <button class="action-btn">🗑️</button>
+                                        <a href="{% url 'edit_section' section.id %}">✏️</a>
+                                        <a href="{% url 'delete_section' section.id %}">🗑️</a>
                                     </div>
                                 </div>
                                 <div class="section-content">
@@ -140,7 +142,7 @@
                                 </div>
                             </li>
 
-                            </a>
+                            
                             {% endfor %}
                         </ul>
                         {% else %}

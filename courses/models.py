@@ -28,3 +28,5 @@ class Lesson(models.Model):
     pdf_file = models.FileField(upload_to='lessons/pdfs/', blank=True, null=True)
     order = models.PositiveIntegerField(default=0)
     duration = models.DurationField(null=True, blank=True)
+
+    
