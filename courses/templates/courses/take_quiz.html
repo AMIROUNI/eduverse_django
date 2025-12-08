@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Take Quiz - {{ pdf.title }}</title>
+    {% load static %}
+</head>
+<body>
+{% include 'includes/header.html' %}
+
+<div style="max-width: 800px; margin: 80px auto 40px; padding: 20px;">
+    <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 30px; border-radius: 12px; margin-bottom: 30px;">
+        <h1>🎯 Take Quiz</h1>
+        <p>Course: <strong>{{ course.title }}</strong></p>
+        <p>PDF: <strong>{{ pdf.title }}</strong></p>
+        <p>Instructor: <strong>{{ course.instructor.username }}</strong></p>
+        
+        {% if show_results %}
+        <p>Your Score: <strong>{{ score }}/{{ total }} ({{ percentage|floatformat:1 }}%)</strong></p>
+        {% else %}
+        <p>Total Questions: <strong>{{ quizzes.count }}</strong></p>
+        {% endif %}
+    </div>
+    
+    {% if messages %}
+    <div>
+        {% for message in messages %}
+        <div>{{ message }}</div>
+        {% endfor %}
+    </div>
+    {% endif %}
+    
+    {% if show_results %}
+    <!-- Quiz Results -->
+    <div style="background: white; border-radius: 12px; padding: 30px; text-align: center; margin: 30px 0; box-shadow: 0 4px 20px rgba(0,0,0,0.1);">
+        <h2>Quiz Results</h2>
+        <p>You answered <strong>{{ score }} out of {{ total }}</strong> questions correctly.</p>
+        <p>Score: <strong>{{ percentage|floatformat:1 }}%</strong></p>
+        
+        {% if percentage >= 80 %}
+        <p>🎉 Excellent! You mastered this material!</p>
+        {% elif percentage >= 60 %}
+        <p>👍 Good job! You understand the key concepts.</p>
+        {% else %}
+        <p>📚 Keep studying! Review the material and try again.</p>
+        {% endif %}
+        
+        <a href="{% url 'course_detail' course.id %}" style="background: #667eea; color: white; padding: 10px 20px; border-radius: 8px; text-decoration: none;">
+            ← Back to Course
+        </a>
+    </div>
+    
+    <!-- Show answers review -->
+    <h2>Review Answers</h2>
+    {% for quiz in quizzes %}
+    <div style="background: white; border-radius: 12px; padding: 25px; margin-bottom: 20px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); border: 1px solid #e0e0e0;">
+        <div style="font-size: 1.2rem; font-weight: 600; margin-bottom: 20px; color: #333;">
+            Q{{ forloop.counter }}: {{ quiz.question }}
+        </div>
+        <div style="display: grid; gap: 10px;">
+            <div >
+                A. {{ quiz.option_a }}
+            </div>
+            <div >
+                B. {{ quiz.option_b }}
+            </div>
+            <div >
+                C. {{ quiz.option_c }}
+            </div>
+            <div >
+                D. {{ quiz.option_d }}
+            </div>
+        </div>
+        <p style="margin-top: 15px; color: #28a745; font-weight: 600;">
+            ✅ Correct Answer: {{ quiz.correct_answer }}
+        </p>
+    </div>
+    {% endfor %}
+    
+    {% else %}
+    <!-- Quiz Form -->
+    <form method="post">
+        {% csrf_token %}
+        
+        {% for quiz in quizzes %}
+        <div style="background: white; border-radius: 12px; padding: 25px; margin-bottom: 20px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); border: 1px solid #e0e0e0;">
+            <div style="font-size: 1.2rem; font-weight: 600; margin-bottom: 20px; color: #333;">
+                Q{{ forloop.counter }}: {{ quiz.question }}
+            </div>
+            <div style="display: grid; gap: 10px;">
+                <label style="display: block; padding: 15px; border: 2px solid #e0e0e0; border-radius: 8px; cursor: pointer;">
+                    <input type="radio" name="quiz_{{ quiz.id }}" value="A" required style="margin-right: 10px;">
+                    A. {{ quiz.option_a }}
+                </label>
+                <label style="display: block; padding: 15px; border: 2px solid #e0e0e0; border-radius: 8px; cursor: pointer;">
+                    <input type="radio" name="quiz_{{ quiz.id }}" value="B" style="margin-right: 10px;">
+                    B. {{ quiz.option_b }}
+                </label>
+                <label style="display: block; padding: 15px; border: 2px solid #e0e0e0; border-radius: 8px; cursor: pointer;">
+                    <input type="radio" name="quiz_{{ quiz.id }}" value="C" style="margin-right: 10px;">
+                    C. {{ quiz.option_c }}
+                </label>
+                <label style="display: block; padding: 15px; border: 2px solid #e0e0e0; border-radius: 8px; cursor: pointer;">
+                    <input type="radio" name="quiz_{{ quiz.id }}" value="D" style="margin-right: 10px;">
+                    D. {{ quiz.option_d }}
+                </label>
+            </div>
+        </div>
+        {% endfor %}
+        
+        <div style="text-align: center; margin-top: 30px;">
+            <button type="submit" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none; padding: 15px 30px; border-radius: 8px; font-size: 1.1rem; cursor: pointer;">
+                📝 Submit Quiz
+            </button>
+        </div>
+    </form>
+    {% endif %}
+    
+    <div style="text-align: center; margin-top: 30px;">
+        <a href="{% url 'course_detail' course.id %}" style="color: #667eea; text-decoration: none;">
+            ← Back to Course
+        </a>
+    </div>
+</div>
+
+{% include 'includes/footer.html' %}
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Add selection styling to radio buttons
+    const labels = document.querySelectorAll('label');
+    labels.forEach(label => {
+        const radio = label.querySelector('input[type="radio"]');
+        if (radio) {
+            radio.addEventListener('change', function() {
+                // Remove selected style from all labels in this question
+                const questionDiv = this.closest('div[style*="display: grid"]');
+                if (questionDiv) {
+                    const questionLabels = questionDiv.querySelectorAll('label');
+                    questionLabels.forEach(l => l.style.background = '');
+                    questionLabels.forEach(l => l.style.borderColor = '#e0e0e0');
+                }
+                
+                // Add selected style to clicked label
+                this.closest('label').style.background = '#cce5ff';
+                this.closest('label').style.borderColor = '#007bff';
+            });
+        }
+    });
+});
+</script>
+</body>
+</html>

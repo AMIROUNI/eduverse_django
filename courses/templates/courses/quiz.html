@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz Generator - {{ pdf.title }}</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/header.css' %}">
+    <link rel="stylesheet" href="{% static 'css/footer.css' %}">
+</head>
+<body>
+{% include 'includes/header.html' %}
+
+<div class="quiz-container">
+    <div class="quiz-header">
+        <h1>📝 Quiz Generator</h1>
+        <p>Course: <strong>{{ course.title }}</strong></p>
+        <p>PDF: <strong>{{ pdf.title }}</strong></p>
+        <p>Instructor: <strong>{{ course.instructor.username }}</strong></p>
+        {% if has_quizzes %}
+        <p>Status: <strong>✅ {{ quizzes.count }} quizzes generated</strong></p>
+        {% else %}
+        <p>Status: <strong>⏳ No quizzes generated yet</strong></p>
+        {% endif %}
+    </div>
+    
+    {% if messages %}
+    <div class="messages">
+        {% for message in messages %}
+        <div class="message {{ message.tags }}">{{ message }}</div>
+        {% endfor %}
+    </div>
+    {% endif %}
+    
+    {% if has_quizzes %}
+    <div class="quizzes-list">
+        <h2>Generated Quizzes ({{ quizzes.count }})</h2>
+        {% for quiz in quizzes %}
+        <div class="quiz-card">
+            <div class="question">Q{{ forloop.counter }}: {{ quiz.question }}</div>
+            <div class="options">
+                <div class="option {% if quiz.correct_answer == 'A' %}correct{% endif %}">
+                    A. {{ quiz.option_a }}
+                </div>
+                <div class="option {% if quiz.correct_answer == 'B' %}correct{% endif %}">
+                    B. {{ quiz.option_b }}
+                </div>
+                <div class="option {% if quiz.correct_answer == 'C' %}correct{% endif %}">
+                    C. {{ quiz.option_c }}
+                </div>
+                <div class="option {% if quiz.correct_answer == 'D' %}correct{% endif %}">
+                    D. {{ quiz.option_d }}
+                </div>
+            </div>
+            <p style="margin-top: 15px; color: #28a745; font-weight: 600;">
+                ✅ Correct Answer: {{ quiz.correct_answer }}
+            </p>
+        </div>
+        {% endfor %}
+        
+        <div style="text-align: center; margin-top: 30px;">
+            <!-- SAVE TO DATABASE BUTTON -->
+            <form method="post" action="{% url 'save_quiz' pdf.id %}" style="display: inline-block; margin-right: 10px;">
+                {% csrf_token %}
+                <button type="submit" class="generate-btn" style="background: #28a745;">
+                    💾 Save to Database
+                </button>
+            </form>
+            
+            <a href="{% url 'take_quiz' pdf.id %}" class="generate-btn" style="text-decoration: none;">
+                ▶️ Take This Quiz
+            </a>
+            
+            <p style="margin-top: 10px; color: #666;">
+                Click "Save to Database" to store these quizzes permanently.
+            </p>
+        </div>
+    </div>
+    {% endif %}
+    
+    <div style="text-align: center; margin-top: 40px;">
+        <form method="post" action="{% url 'generate_quiz' pdf.id %}">
+            {% csrf_token %}
+            <div style="margin-bottom: 15px;">
+                <label for="num_questions">Number of Questions:</label>
+                <select id="num_questions" name="num_questions" style="padding: 8px; border-radius: 5px;">
+                    <option value="3">3</option>
+                    <option value="5" selected>5</option>
+                    <option value="10">10</option>
+                </select>
+                
+                <label for="difficulty" style="margin-left: 20px;">Difficulty:</label>
+                <select id="difficulty" name="difficulty" style="padding: 8px; border-radius: 5px;">
+                    <option value="easy">Easy</option>
+                    <option value="medium" selected>Medium</option>
+                    <option value="hard">Hard</option>
+                </select>
+            </div>
+            
+            <button type="submit" class="generate-btn">
+                {% if has_quizzes %}
+                🔄 Regenerate Quizzes
+                {% else %}
+                🚀 Generate Quizzes from PDF
+                {% endif %}
+            </button>
+        </form>
+        <p style="margin-top: 15px; color: #666;">
+            This will analyze the PDF using AI and generate multiple-choice questions.
+        </p>
+    </div>
+    
+    <div style="text-align: center; margin-top: 30px;">
+        <a href="{% url 'course_detail' course.id %}" style="color: #667eea; text-decoration: none;">
+            ← Back to Course
+        </a>
+    </div>
+</div>
+
+{% include 'includes/footer.html' %}
+
+<script>
+    // Add confirmation for save button
+    document.addEventListener('DOMContentLoaded', function() {
+        const saveForm = document.querySelector('form[action*="save_quiz"]');
+        if (saveForm) {
+            saveForm.addEventListener('submit', function(e) {
+                if (!confirm('Are you sure you want to save these quizzes to the database? This will make them available for students.')) {
+                    e.preventDefault();
+                }
+            });
+        }
+    });
+</script>
+</body>
+</html>

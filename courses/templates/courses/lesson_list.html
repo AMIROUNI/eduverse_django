@@ -3,170 +3,537 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ section.title }} - Lessons</title>
+    <title>Courses - Learning Platform</title>
 
     {% load static %}
     <link rel="stylesheet" href="{% static 'css/header.css' %}">
     <link rel="stylesheet" href="{% static 'css/footer.css' %}">
-    <link rel="stylesheet" href="{% static 'css/lesson_list.css' %}">
+    <link rel="stylesheet" href="{% static 'css/courses.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 </head>
 <body>
     {% include 'includes/header.html' %}
 
     <div class="page-container">
-        <!-- Book Container -->
-        <div class="book-container">
-            <div class="book-spine"></div>
-            
-            <div class="book-header">
-                <h1 class="book-title">Course Lessons</h1>
-                <p class="section-title">Section: {{ section.title }}</p>
+        <!-- Page Header with Stats -->
+        <div class="page-header">
+            <div class="header-content">
+                <h1 class="page-title">Master New Skills</h1>
+                <p class="page-subtitle">Explore our curated collection of premium courses designed to transform your career</p>
+                
+                <!-- Stats -->
+                <div class="header-stats">
+                    <div class="stat-item">
+                        <div class="stat-number">{{ courses|length }}+</div>
+                        <div class="stat-label">Courses</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number">50+</div>
+                        <div class="stat-label">Instructors</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number">10K+</div>
+                        <div class="stat-label">Students</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number">4.8</div>
+                        <div class="stat-label">Avg Rating</div>
+                    </div>
+                </div>
             </div>
             
-            <div class="book-content">
-                <!-- Left Page - Lessons List -->
-                <div class="page-left">
-                    <div class="page-corner"></div>
-                    
-                    <div class="lessons-header">
-                        <h2 class="lessons-title">Table of Contents</h2>
-                        <span class="lessons-count">{{ lessons|length }} lessons</span>
-                    </div>
-                    
-                    {% if lessons %}
-                    <ul class="lessons-list">
-                        {% for lesson in lessons %}
-                        <li class="lesson-item {% if forloop.first %}active{% endif %}" 
-                            data-lesson-id="{{ lesson.id }}"
-                            data-title="{{ lesson.title }}"
-                            data-content="{{ lesson.content }}"
-                            data-duration="{{ lesson.duration }}"
-                            data-video="{{ lesson.video_url }}"
-                            data-pdf="{{ lesson.pdf_file.url }}">
-                            <div class="lesson-number">{{ forloop.counter }}</div>
-                            <h3 class="lesson-title">{{ lesson.title }}</h3>
-                            <p class="lesson-preview">
-                                {{ lesson.content|truncatewords:20|default:"No content available" }}
-                            </p>
-                        </li>
-                        {% endfor %}
-                    </ul>
-                    {% else %}
-                    <div class="empty-lessons">
-                        <p>No lessons available for this section yet.</p>
-                        <p>Create your first lesson to get started!</p>
-                    </div>
-                    {% endif %}
+            <!-- Decorative Elements -->
+            <div class="header-decoration">
+                <div class="deco-circle deco-1"></div>
+                <div class="deco-circle deco-2"></div>
+                <div class="deco-circle deco-3"></div>
+                <div class="deco-wave"></div>
+            </div>
+        </div>
+
+        <!-- Search and Filter Section -->
+        <div class="search-filter-section">
+            <div class="search-container">
+                <div class="search-box">
+                    <i class="fas fa-search search-icon"></i>
+                    <form method="get" action="{% url 'courses' %}" class="search-form">
+                        <input type="text" name="q" placeholder="Search courses, instructors, or topics..." 
+                               value="{{ query }}" class="search-input">
+                        <button type="submit" class="search-btn">
+                            <i class="fas fa-search"></i>
+                            Search
+                        </button>
+                    </form>
+                    <button class="filter-toggle" id="filterToggle">
+                        <i class="fas fa-filter"></i>
+                        Filters
+                    </button>
                 </div>
                 
-                <!-- Right Page - Lesson Reader -->
-                <div class="page-right">
-                    <div class="page-corner"></div>
-                    
-                    <div class="reader-header">
-                        <h2 class="current-lesson-title" id="current-lesson-title">
-                            {% if lessons %} {{ lessons.0.title }} {% else %} No Lesson Selected {% endif %}
-                        </h2>
-                        <span class="lesson-duration" id="lesson-duration">
-                            {% if lessons %} {{ lessons.0.duration|default:"Duration not set" }} {% endif %}
-                        </span>
+                <!-- Advanced Filters (Hidden by default) -->
+                <div class="advanced-filters" id="advancedFilters">
+                    <div class="filter-group">
+                        <h4 class="filter-title"><i class="fas fa-tags"></i> Category</h4>
+                        <div class="category-filters">
+                            <label class="filter-checkbox">
+                                <input type="checkbox" name="category" value="all" checked>
+                                <span>All Categories</span>
+                            </label>
+                            <label class="filter-checkbox">
+                                <input type="checkbox" name="category" value="web">
+                                <span>Web Development</span>
+                            </label>
+                            <label class="filter-checkbox">
+                                <input type="checkbox" name="category" value="data">
+                                <span>Data Science</span>
+                            </label>
+                            <label class="filter-checkbox">
+                                <input type="checkbox" name="category" value="design">
+                                <span>Design</span>
+                            </label>
+                            <label class="filter-checkbox">
+                                <input type="checkbox" name="category" value="business">
+                                <span>Business</span>
+                            </label>
+                        </div>
                     </div>
                     
-                    <div class="lesson-content" id="lesson-content">
-                        {% if lessons %}
-                            {{ lessons.0.content|linebreaks }}
-                            
-                            {% if lessons.0.video_url %}
-                            <div class="video-container" style="margin: 2rem 0;">
-                                <h4>Video Content</h4>
-                                <a href="{{ lessons.0.video_url }}" target="_blank" class="btn-primary" style="display: inline-flex; text-decoration: none;">
-                                    Watch Video
-                                </a>
-                            </div>
-                            {% endif %}
-                            
-                            {% if lessons.0.pdf_file %}
-                            <div class="pdf-container" style="margin: 2rem 0;">
-                                <h4>Download Materials</h4>
-                                <a href="{{ lessons.0.pdf_file.url }}" target="_blank" class="btn-primary" style="display: inline-flex; text-decoration: none;">
-                                    Download PDF
-                                </a>
-                            </div>
-                            {% endif %}
-                        {% else %}
-                            <div class="page-placeholder">
-                                <p>Select a lesson from the table of contents to start reading</p>
-                            </div>
-                        {% endif %}
+                    <div class="filter-group">
+                        <h4 class="filter-title"><i class="fas fa-sort-amount-down"></i> Sort By</h4>
+                        <select class="sort-select">
+                            <option value="popular">Most Popular</option>
+                            <option value="newest">Newest</option>
+                            <option value="price-low">Price: Low to High</option>
+                            <option value="price-high">Price: High to Low</option>
+                            <option value="rating">Highest Rated</option>
+                        </select>
                     </div>
                     
-                    {% if lessons %}
-                    <div class="reader-controls">
-                        <button class="nav-btn" id="prev-lesson" disabled>
-                            ← Previous
-                        </button>
-                        
-                        <span class="progress-indicator" id="progress-indicator">
-                            1 of {{ lessons|length }}
-                        </span>
-                        
-                        <button class="nav-btn" id="next-lesson" {% if lessons|length <= 1 %}disabled{% endif %}>
-                            Next →
-                        </button>
+                    <div class="filter-group">
+                        <h4 class="filter-title"><i class="fas fa-dollar-sign"></i> Price Range</h4>
+                        <div class="price-slider">
+                            <input type="range" min="0" max="500" value="250" class="slider" id="priceSlider">
+                            <div class="price-labels">
+                                <span>$0</span>
+                                <span>$250</span>
+                                <span>$500+</span>
+                            </div>
+                        </div>
                     </div>
-                    {% endif %}
+                    
+                    <button class="apply-filters-btn">
+                        <i class="fas fa-check"></i>
+                        Apply Filters
+                    </button>
                 </div>
             </div>
         </div>
-        
-        <!-- Add Lesson Form -->
-        <div class="add-lesson-section">
-            <div class="form-header">
-                <h2 class="form-title">Add New Lesson</h2>
+
+        <!-- Quick Category Navigation -->
+        <div class="category-nav">
+            <div class="category-scroll">
+                <a href="?category=all" class="category-chip active">
+                    <i class="fas fa-globe"></i>
+                    All Courses
+                </a>
+                <a href="?category=web" class="category-chip">
+                    <i class="fas fa-code"></i>
+                    Web Dev
+                </a>
+                <a href="?category=data" class="category-chip">
+                    <i class="fas fa-chart-line"></i>
+                    Data Science
+                </a>
+                <a href="?category=design" class="category-chip">
+                    <i class="fas fa-paint-brush"></i>
+                    Design
+                </a>
+                <a href="?category=business" class="category-chip">
+                    <i class="fas fa-briefcase"></i>
+                    Business
+                </a>
+                <a href="?category=marketing" class="category-chip">
+                    <i class="fas fa-bullhorn"></i>
+                    Marketing
+                </a>
+                <a href="?category=ai" class="category-chip">
+                    <i class="fas fa-robot"></i>
+                    AI & ML
+                </a>
+                <a href="?category=mobile" class="category-chip">
+                    <i class="fas fa-mobile-alt"></i>
+                    Mobile
+                </a>
             </div>
-            
-            <form method="post" enctype="multipart/form-data" class="lesson-form">
-                {% csrf_token %}
-                
-                <div class="form-group full-width">
-                    <label class="form-label" for="id_title">Lesson Title</label>
-                    {{ lesson_form.title }}
+        </div>
+
+        {% if messages %}
+        <div class="messages-container">
+            {% for message in messages %}
+            <div class="message-card {{ message.tags }}">
+                <i class="fas fa-info-circle"></i>
+                <div class="message-content">
+                    <h4>Notification</h4>
+                    <p>{{ message }}</p>
                 </div>
-                
-                <div class="form-group full-width">
-                    <label class="form-label" for="id_content">Lesson Content</label>
-                    {{ lesson_form.content }}
+                <button class="message-close">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        <!-- Enhanced Courses Grid -->
+        <div class="courses-grid-container">
+            {% if courses %}
+                <div class="grid-controls">
+                    <div class="grid-view-controls">
+                        <button class="view-btn active" data-view="grid">
+                            <i class="fas fa-th"></i>
+                        </button>
+                        <button class="view-btn" data-view="list">
+                            <i class="fas fa-list"></i>
+                        </button>
+                    </div>
+                    <div class="results-count">
+                        Showing <span>{{ courses|length }}</span> of {{ courses|length }} courses
+                    </div>
                 </div>
-                
-                <div class="form-group">
-                    <label class="form-label" for="id_video_url">Video URL</label>
-                    {{ lesson_form.video_url }}
-                </div>
-                
-                <div class="form-group">
-                    <label class="form-label" for="id_order">Order</label>
-                    {{ lesson_form.order }}
-                </div>
-                
-                <div class="form-group">
-                    <label class="form-label" for="id_duration">Duration</label>
-                    {{ lesson_form.duration }}
-                </div>
-                
-                <div class="form-group">
-                    <label class="form-label" for="id_pdf_file">PDF File</label>
-                    <div class="file-input-wrapper">
-                        {{ lesson_form.pdf_file }}
-                        <div class="file-input-label">
-                            <span>Choose PDF file</span>
+
+                <!-- Grid View -->
+                <div class="courses-grid grid-view active">
+                    {% for course in courses %}
+                    <div class="course-card" data-category="{{ course.category.name|default:'general'|lower }}">
+                        <!-- Premium Badge -->
+                        {% if course.price > 100 %}
+                        <div class="premium-badge">
+                            <i class="fas fa-crown"></i>
+                            Premium
                         </div>
+                        {% endif %}
+                        
+                        <!-- Course Header -->
+                        <div class="course-header">
+                            <div class="course-category">
+                                <i class="fas fa-bookmark"></i>
+                                {{ course.category.name|default:"General" }}
+                            </div>
+                            <button class="wishlist-btn" data-course="{{ course.id }}">
+                                <i class="far fa-heart"></i>
+                            </button>
+                        </div>
+                        
+                        <!-- Course Thumbnail -->
+                        <div class="course-thumbnail">
+                            {% if course.thumbnail %}
+                                <img src="{{ course.thumbnail.url }}" alt="{{ course.title }}" loading="lazy">
+                            {% else %}
+                                <div class="thumbnail-placeholder">
+                                    <i class="fas fa-graduation-cap"></i>
+                                </div>
+                            {% endif %}
+                            <div class="thumbnail-overlay">
+                                <span class="play-btn">
+                                    <i class="fas fa-play"></i>
+                                </span>
+                            </div>
+                        </div>
+                        
+                        <!-- Course Content -->
+                        <div class="course-content">
+                            <h3 class="course-title">{{ course.title }}</h3>
+                            <p class="course-description">
+                                {{ course.description|truncatewords:25 }}
+                            </p>
+                            
+                            <!-- Instructor Info -->
+                            <div class="instructor-info">
+                                <div class="instructor-avatar">
+                                    {% if course.instructor.profile_image %}
+                                        <img src="{{ course.instructor.profile_image.url }}" alt="{{ course.instructor.username }}">
+                                    {% else %}
+                                        <i class="fas fa-user"></i>
+                                    {% endif %}
+                                </div>
+                                <div class="instructor-details">
+                                    <h5>{{ course.instructor.username }}</h5>
+                                    <p>Instructor</p>
+                                </div>
+                            </div>
+                            
+                            <!-- Course Meta -->
+                            <div class="course-meta">
+                                <div class="meta-item">
+                                    <i class="fas fa-play-circle"></i>
+                                    <span>{{ course.sections.count }} lessons</span>
+                                </div>
+                                <div class="meta-item">
+                                    <i class="fas fa-clock"></i>
+                                    <span>{{ course.created_at|date:"M Y" }}</span>
+                                </div>
+                                <div class="meta-item">
+                                    <i class="fas fa-star"></i>
+                                    <span>4.8</span>
+                                </div>
+                            </div>
+                            
+                            <!-- Progress Bar -->
+                            <div class="progress-container">
+                                <div class="progress-label">
+                                    <span>Enrollment Rate</span>
+                                    <span>78%</span>
+                                </div>
+                                <div class="progress-bar">
+                                    <div class="progress-fill" style="width: 78%"></div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Course Footer -->
+                        <div class="course-footer">
+                            <div class="price-section">
+                                {% if course.discount_price %}
+                                <div class="price-original">${{ course.price }}</div>
+                                <div class="price-discounted">${{ course.discount_price }}</div>
+                                {% else %}
+                                <div class="price-normal">${{ course.price }}</div>
+                                {% endif %}
+                            </div>
+                            
+                            <div class="action-buttons">
+                                <a href="{% url 'course_detail' course.id %}" class="view-btn">
+                                    <i class="fas fa-eye"></i>
+                                    Preview
+                                </a>
+                                <button class="enroll-btn" data-course="{{ course.id }}">
+                                    <i class="fas fa-shopping-cart"></i>
+                                    Enroll Now
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <!-- Hover Actions -->
+                        <div class="hover-actions">
+                            <button class="quick-view" data-course="{{ course.id }}">
+                                <i class="fas fa-expand"></i>
+                                Quick View
+                            </button>
+                            <button class="add-compare" data-course="{{ course.id }}">
+                                <i class="fas fa-balance-scale"></i>
+                                Compare
+                            </button>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+
+                <!-- List View (Hidden by default) -->
+                <div class="courses-list list-view">
+                    {% for course in courses %}
+                    <div class="course-list-item">
+                        <div class="list-thumbnail">
+                            {% if course.thumbnail %}
+                                <img src="{{ course.thumbnail.url }}" alt="{{ course.title }}">
+                            {% else %}
+                                <div class="thumbnail-placeholder">
+                                    <i class="fas fa-book"></i>
+                                </div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="list-content">
+                            <div class="list-header">
+                                <h3>{{ course.title }}</h3>
+                                <div class="list-category">
+                                    {{ course.category.name|default:"General" }}
+                                </div>
+                            </div>
+                            
+                            <p class="list-description">
+                                {{ course.description|truncatewords:40 }}
+                            </p>
+                            
+                            <div class="list-meta">
+                                <div class="instructor-info">
+                                    <div class="instructor-avatar small">
+                                        {% if course.instructor.profile_image %}
+                                            <img src="{{ course.instructor.profile_image.url }}" alt="{{ course.instructor.username }}">
+                                        {% else %}
+                                            <i class="fas fa-user"></i>
+                                        {% endif %}
+                                    </div>
+                                    <span>{{ course.instructor.username }}</span>
+                                </div>
+                                
+                                <div class="meta-stats">
+                                    <span><i class="fas fa-play-circle"></i> {{ course.sections.count }} lessons</span>
+                                    <span><i class="fas fa-clock"></i> 12h 30m</span>
+                                    <span><i class="fas fa-star"></i> 4.8 (245)</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="list-actions">
+                            <div class="price-display">
+                                {% if course.discount_price %}
+                                <div class="original-price">${{ course.price }}</div>
+                                <div class="current-price">${{ course.discount_price }}</div>
+                                {% else %}
+                                <div class="current-price">${{ course.price }}</div>
+                                {% endif %}
+                            </div>
+                            
+                            <div class="action-buttons">
+                                <button class="wishlist-btn" data-course="{{ course.id }}">
+                                    <i class="far fa-heart"></i>
+                                </button>
+                                <a href="{% url 'course_detail' course.id %}" class="detail-btn">
+                                    View Details
+                                </a>
+                                <button class="enroll-btn">
+                                    Enroll Now
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+
+                <!-- Pagination -->
+                <div class="pagination-container">
+                    <nav class="pagination">
+                        <button class="page-nav disabled">
+                            <i class="fas fa-chevron-left"></i>
+                        </button>
+                        
+                        <div class="page-numbers">
+                            <button class="page-number active">1</button>
+                            <button class="page-number">2</button>
+                            <button class="page-number">3</button>
+                            <span class="page-ellipsis">...</span>
+                            <button class="page-number">10</button>
+                        </div>
+                        
+                        <button class="page-nav">
+                            <i class="fas fa-chevron-right"></i>
+                        </button>
+                    </nav>
+                    
+                    <div class="items-per-page">
+                        <span>Show:</span>
+                        <select class="items-select">
+                            <option value="12">12 per page</option>
+                            <option value="24">24 per page</option>
+                            <option value="48">48 per page</option>
+                        </select>
                     </div>
                 </div>
                 
-                <button type="submit" class="btn-primary">
-                    <span>Add Lesson</span>
+            {% else %}
+                <!-- Empty State -->
+                <div class="empty-state">
+                    <div class="empty-illustration">
+                        <i class="fas fa-book-open"></i>
+                        <div class="empty-effect"></div>
+                    </div>
+                    <h2 class="empty-title">
+                        {% if query %}
+                        No courses found for "{{ query }}"
+                        {% else %}
+                        No Courses Available
+                        {% endif %}
+                    </h2>
+                    <p class="empty-description">
+                        {% if query %}
+                        Try adjusting your search terms or browse our popular categories
+                        {% else %}
+                        We're currently preparing amazing courses for you. Check back soon!
+                        {% endif %}
+                    </p>
+                    <div class="empty-actions">
+                        <button class="explore-btn">
+                            <i class="fas fa-compass"></i>
+                            Explore All Categories
+                        </button>
+                        <button class="refresh-btn">
+                            <i class="fas fa-sync-alt"></i>
+                            Refresh Page
+                        </button>
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+
+        <!-- Featured Categories Section -->
+        <div class="featured-categories">
+            <h2 class="section-title">
+                <i class="fas fa-fire"></i>
+                Popular Categories
+            </h2>
+            <p class="section-subtitle">Browse our most sought-after learning paths</p>
+            
+            <div class="categories-grid">
+                <div class="category-card" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%)">
+                    <div class="category-icon">
+                        <i class="fas fa-code"></i>
+                    </div>
+                    <h3>Web Development</h3>
+                    <p>45 courses</p>
+                    <div class="category-overlay">
+                        <button class="explore-category">Explore</button>
+                    </div>
+                </div>
+                
+                <div class="category-card" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%)">
+                    <div class="category-icon">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <h3>Data Science</h3>
+                    <p>32 courses</p>
+                    <div class="category-overlay">
+                        <button class="explore-category">Explore</button>
+                    </div>
+                </div>
+                
+                <div class="category-card" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)">
+                    <div class="category-icon">
+                        <i class="fas fa-paint-brush"></i>
+                    </div>
+                    <h3>UI/UX Design</h3>
+                    <p>28 courses</p>
+                    <div class="category-overlay">
+                        <button class="explore-category">Explore</button>
+                    </div>
+                </div>
+                
+                <div class="category-card" style="background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%)">
+                    <div class="category-icon">
+                        <i class="fas fa-robot"></i>
+                    </div>
+                    <h3>AI & ML</h3>
+                    <p>36 courses</p>
+                    <div class="category-overlay">
+                        <button class="explore-category">Explore</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick View Modal -->
+    <div class="modal-overlay" id="quickViewModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Quick Course Preview</h3>
+                <button class="modal-close">
+                    <i class="fas fa-times"></i>
                 </button>
-            </form>
+            </div>
+            <div class="modal-body">
+                <!-- Content will be loaded dynamically -->
+            </div>
         </div>
     </div>
 
@@ -174,119 +541,281 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // Initialize form fields with proper classes
-            const formInputs = document.querySelectorAll('input, select, textarea');
-            formInputs.forEach(input => {
-                input.classList.add('form-control');
-            });
+            // View Toggle
+            const viewBtns = document.querySelectorAll('.view-btn');
+            const gridView = document.querySelector('.grid-view');
+            const listView = document.querySelector('.list-view');
             
-            // Lesson navigation functionality
-            const lessonItems = document.querySelectorAll('.lesson-item');
-            const currentLessonTitle = document.getElementById('current-lesson-title');
-            const lessonDuration = document.getElementById('lesson-duration');
-            const lessonContent = document.getElementById('lesson-content');
-            const prevBtn = document.getElementById('prev-lesson');
-            const nextBtn = document.getElementById('next-lesson');
-            const progressIndicator = document.getElementById('progress-indicator');
-            
-            let currentLessonIndex = 0;
-            
-            // Function to update lesson display
-            function updateLessonDisplay(index) {
-                if (lessonItems.length === 0) return;
-                
-                const lesson = lessonItems[index];
-                const title = lesson.getAttribute('data-title');
-                const content = lesson.getAttribute('data-content');
-                const duration = lesson.getAttribute('data-duration');
-                const videoUrl = lesson.getAttribute('data-video');
-                const pdfFile = lesson.getAttribute('data-pdf');
-                
-                // Update active state
-                lessonItems.forEach(item => item.classList.remove('active'));
-                lesson.classList.add('active');
-                
-                // Update content
-                currentLessonTitle.textContent = title;
-                lessonDuration.textContent = duration || 'Duration not set';
-                
-                // Build content HTML
-                let contentHTML = `<p>${content.replace(/\n/g, '</p><p>')}</p>`;
-                
-                if (videoUrl) {
-                    contentHTML += `
-                        <div class="video-container" style="margin: 2rem 0;">
-                            <h4>Video Content</h4>
-                            <a href="${videoUrl}" target="_blank" class="btn-primary" style="display: inline-flex; text-decoration: none;">
-                                Watch Video
-                            </a>
-                        </div>
-                    `;
-                }
-                
-                if (pdfFile) {
-                    contentHTML += `
-                        <div class="pdf-container" style="margin: 2rem 0;">
-                            <h4>Download Materials</h4>
-                            <a href="${pdfFile}" target="_blank" class="btn-primary" style="display: inline-flex; text-decoration: none;">
-                                Download PDF
-                            </a>
-                        </div>
-                    `;
-                }
-                
-                lessonContent.innerHTML = contentHTML;
-                
-                // Update navigation
-                prevBtn.disabled = index === 0;
-                nextBtn.disabled = index === lessonItems.length - 1;
-                progressIndicator.textContent = `${index + 1} of ${lessonItems.length}`;
-                
-                currentLessonIndex = index;
-            }
-            
-            // Click event for lesson items
-            lessonItems.forEach((item, index) => {
-                item.addEventListener('click', () => {
-                    updateLessonDisplay(index);
-                });
-            });
-            
-            // Navigation buttons
-            if (prevBtn) {
-                prevBtn.addEventListener('click', () => {
-                    if (currentLessonIndex > 0) {
-                        updateLessonDisplay(currentLessonIndex - 1);
-                    }
-                });
-            }
-            
-            if (nextBtn) {
-                nextBtn.addEventListener('click', () => {
-                    if (currentLessonIndex < lessonItems.length - 1) {
-                        updateLessonDisplay(currentLessonIndex + 1);
-                    }
-                });
-            }
-            
-            // File input display
-            const fileInputs = document.querySelectorAll('input[type="file"]');
-            
-            fileInputs.forEach(input => {
-                input.addEventListener('change', function() {
-                    const label = this.parentElement.querySelector('.file-input-label');
-                    if (this.files.length > 0) {
-                        label.innerHTML = `<span>Selected: ${this.files[0].name}</span>`;
-                        label.style.borderColor = '#b8465b';
-                        label.style.backgroundColor = '#f9eaea';
+            viewBtns.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const view = this.dataset.view;
+                    
+                    // Update active button
+                    viewBtns.forEach(b => b.classList.remove('active'));
+                    this.classList.add('active');
+                    
+                    // Show/hide views
+                    if (view === 'grid') {
+                        gridView.classList.add('active');
+                        listView.classList.remove('active');
                     } else {
-                        label.innerHTML = '<span>Choose PDF file</span>';
-                        label.style.borderColor = '';
-                        label.style.backgroundColor = '';
+                        gridView.classList.remove('active');
+                        listView.classList.add('active');
                     }
+                });
+            });
+            
+            // Filter Toggle
+            const filterToggle = document.getElementById('filterToggle');
+            const advancedFilters = document.getElementById('advancedFilters');
+            
+            if (filterToggle) {
+                filterToggle.addEventListener('click', function() {
+                    advancedFilters.classList.toggle('active');
+                    this.classList.toggle('active');
+                });
+            }
+            
+            // Category Chips
+            const categoryChips = document.querySelectorAll('.category-chip');
+            categoryChips.forEach(chip => {
+                chip.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    categoryChips.forEach(c => c.classList.remove('active'));
+                    this.classList.add('active');
+                });
+            });
+            
+            // Wishlist Toggle
+            const wishlistBtns = document.querySelectorAll('.wishlist-btn');
+            wishlistBtns.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const icon = this.querySelector('i');
+                    if (icon.classList.contains('far')) {
+                        icon.classList.replace('far', 'fas');
+                        this.style.color = '#ce6573';
+                        
+                        // Animation
+                        this.style.animation = 'pulse 0.3s ease';
+                        setTimeout(() => {
+                            this.style.animation = '';
+                        }, 300);
+                    } else {
+                        icon.classList.replace('fas', 'far');
+                        this.style.color = '';
+                    }
+                });
+            });
+            
+            // Price Slider
+            const priceSlider = document.getElementById('priceSlider');
+            if (priceSlider) {
+                priceSlider.addEventListener('input', function() {
+                    const value = this.value;
+                    const labels = this.parentElement.querySelectorAll('.price-labels span');
+                    labels[1].textContent = `$${value}`;
+                });
+            }
+            
+            // Course Card Hover Effects
+            const courseCards = document.querySelectorAll('.course-card');
+            courseCards.forEach(card => {
+                card.addEventListener('mouseenter', function() {
+                    this.style.transform = 'translateY(-10px)';
+                    this.style.boxShadow = '0 25px 50px rgba(206, 101, 115, 0.15)';
+                    
+                    const thumbnail = this.querySelector('.course-thumbnail img');
+                    if (thumbnail) {
+                        thumbnail.style.transform = 'scale(1.1)';
+                    }
+                });
+                
+                card.addEventListener('mouseleave', function() {
+                    this.style.transform = '';
+                    this.style.boxShadow = '';
+                    
+                    const thumbnail = this.querySelector('.course-thumbnail img');
+                    if (thumbnail) {
+                        thumbnail.style.transform = '';
+                    }
+                });
+            });
+            
+            // Quick View Modal
+            const quickViewBtns = document.querySelectorAll('.quick-view');
+            const quickViewModal = document.getElementById('quickViewModal');
+            const modalClose = document.querySelector('.modal-close');
+            
+            quickViewBtns.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    quickViewModal.classList.add('active');
+                });
+            });
+            
+            if (modalClose) {
+                modalClose.addEventListener('click', function() {
+                    quickViewModal.classList.remove('active');
+                });
+            }
+            
+            // Close modal when clicking outside
+            quickViewModal.addEventListener('click', function(e) {
+                if (e.target === this) {
+                    this.classList.remove('active');
+                }
+            });
+            
+            // Category Filtering
+            const filterCheckboxes = document.querySelectorAll('.filter-checkbox input');
+            filterCheckboxes.forEach(checkbox => {
+                checkbox.addEventListener('change', function() {
+                    if (this.value === 'all' && this.checked) {
+                        // Uncheck other checkboxes
+                        filterCheckboxes.forEach(cb => {
+                            if (cb.value !== 'all') cb.checked = false;
+                        });
+                    } else if (this.checked) {
+                        // Uncheck "all" checkbox
+                        document.querySelector('input[value="all"]').checked = false;
+                    }
+                    
+                    // Filter courses
+                    const selectedCategories = Array.from(filterCheckboxes)
+                        .filter(cb => cb.checked && cb.value !== 'all')
+                        .map(cb => cb.value);
+                    
+                    courseCards.forEach(card => {
+                        const category = card.dataset.category;
+                        
+                        if (selectedCategories.length === 0 || 
+                            selectedCategories.includes(category)) {
+                            card.style.display = 'block';
+                            setTimeout(() => {
+                                card.style.opacity = '1';
+                                card.style.transform = 'translateY(0)';
+                            }, 10);
+                        } else {
+                            card.style.opacity = '0';
+                            card.style.transform = 'translateY(20px)';
+                            setTimeout(() => {
+                                card.style.display = 'none';
+                            }, 300);
+                        }
+                    });
+                });
+            });
+            
+            // Sort Courses
+            const sortSelect = document.querySelector('.sort-select');
+            if (sortSelect) {
+                sortSelect.addEventListener('change', function() {
+                    const sortBy = this.value;
+                    const cards = Array.from(courseCards);
+                    
+                    cards.sort((a, b) => {
+                        if (sortBy === 'price-low') {
+                            const priceA = parseFloat(a.querySelector('.price-normal, .price-discounted, .price-original').textContent.replace('$', ''));
+                            const priceB = parseFloat(b.querySelector('.price-normal, .price-discounted, .price-original').textContent.replace('$', ''));
+                            return priceA - priceB;
+                        } else if (sortBy === 'price-high') {
+                            const priceA = parseFloat(a.querySelector('.price-normal, .price-discounted, .price-original').textContent.replace('$', ''));
+                            const priceB = parseFloat(b.querySelector('.price-normal, .price-discounted, .price-original').textContent.replace('$', ''));
+                            return priceB - priceA;
+                        }
+                        return 0;
+                    });
+                    
+                    const container = document.querySelector('.courses-grid');
+                    cards.forEach(card => {
+                        container.appendChild(card);
+                    });
+                });
+            }
+            
+            // Enroll Button Animation
+            const enrollBtns = document.querySelectorAll('.enroll-btn');
+            enrollBtns.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const originalText = this.innerHTML;
+                    this.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
+                    this.disabled = true;
+                    
+                    setTimeout(() => {
+                        this.innerHTML = '<i class="fas fa-check"></i> Enrolled!';
+                        this.style.background = '#4CAF50';
+                        
+                        setTimeout(() => {
+                            this.innerHTML = originalText;
+                            this.disabled = false;
+                            this.style.background = '';
+                        }, 2000);
+                    }, 1500);
+                });
+            });
+            
+            // Page Navigation
+            const pageNumbers = document.querySelectorAll('.page-number');
+            pageNumbers.forEach(number => {
+                number.addEventListener('click', function() {
+                    pageNumbers.forEach(n => n.classList.remove('active'));
+                    this.classList.add('active');
+                });
+            });
+            
+            // Refresh Page
+            const refreshBtn = document.querySelector('.refresh-btn');
+            if (refreshBtn) {
+                refreshBtn.addEventListener('click', function() {
+                    this.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Refreshing...';
+                    setTimeout(() => {
+                        location.reload();
+                    }, 1000);
+                });
+            }
+            
+            // Messages Close
+            const messageCloseBtns = document.querySelectorAll('.message-close');
+            messageCloseBtns.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    this.closest('.message-card').style.opacity = '0';
+                    setTimeout(() => {
+                        this.closest('.message-card').remove();
+                    }, 300);
                 });
             });
         });
+        
+        // Add CSS animations
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes pulse {
+                0% { transform: scale(1); }
+                50% { transform: scale(1.1); }
+                100% { transform: scale(1); }
+            }
+            
+            @keyframes slideIn {
+                from {
+                    opacity: 0;
+                    transform: translateY(20px);
+                }
+                to {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
+            }
+            
+            @keyframes float {
+                0%, 100% { transform: translateY(0); }
+                50% { transform: translateY(-10px); }
+            }
+            
+            @keyframes shimmer {
+                0% { background-position: -1000px 0; }
+                100% { background-position: 1000px 0; }
+            }
+        `;
+        document.head.appendChild(style);
     </script>
 </body>
 </html>
